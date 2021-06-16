@@ -1,0 +1,12 @@
+{
+  "name": "movie-list-app",
+  "displayName": "movie-list-app",
+  "expo": {
+    "name": "movie-list-app",
+    "slug": "movie-list-app",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
