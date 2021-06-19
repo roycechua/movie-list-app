@@ -21,13 +21,13 @@ type Props = {
 
 }
 
+const Stack = createStackNavigator();
+
 const MainNavigationContainer : React.FC<Props>  = (props: Props) => {
 	// to be replaced later by redux state variables
 	const [isLoading, setIsLoading] = useState(false);
 	const [userToken, setUserToken] = useState(null);
 	const [isSignout, setIsSignout] = useState(false);
-
-	const Stack = createStackNavigator();
 
 	if (isLoading) {
 		// We haven't finished checking for the token yet
