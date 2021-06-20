@@ -18,7 +18,7 @@ export type RootStackParamsList = {
 	SignIn: undefined;
 	SignUp: undefined;
 	Home: undefined;
-	MovieDetail: undefined;
+	MovieDetail: any | undefined;
 	WatchList: undefined;
 };
 
@@ -90,7 +90,6 @@ const MainNavigationContainer: React.FC<Props> = (props: Props) => {
 								},
 								headerTitleStyle: {
 									color: 'white',
-									fontWeight: 'bold',
 								},
 								headerRight: () => (
 									<TouchableOpacity onPress={handleLogout}>

@@ -28,6 +28,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import theme from '../../themes/themes';
 import moment from 'moment';
 import Res from '../../themes/Res';
+import { AirbnbRating } from 'react-native-ratings';
 
 // Props
 type HomeScreenNavigationProp = StackNavigationProp<
@@ -40,6 +41,7 @@ type Props = {
 };
 
 const HomeScreen: React.FC<Props> = (props: Props) => {
+	const { navigation } = props;
 	const { colors } = useTheme();
 
 	const dispatch = useAppDispatch();
@@ -55,6 +57,13 @@ const HomeScreen: React.FC<Props> = (props: Props) => {
 		() => API.getTrendingMovies(),
 		{ keepPreviousData: true, staleTime: 5000 }
 	);
+
+	// 
+	const handleViewMovieDetails = (movie : any) => {
+		navigation.navigate('MovieDetail', {
+			movie,
+		})
+	}
 
 	return (
 		<ScrollView contentContainerStyle={{ padding: 10 }} showsVerticalScrollIndicator={false}>
@@ -103,33 +112,48 @@ const HomeScreen: React.FC<Props> = (props: Props) => {
 						keyExtractor={(item) => item.id.toString()}
 						horizontal
 						renderItem={({ item, index }) => (
-							<View style={{ width: 150 }}>
-								<Image
-									source={{
-										uri: `https://image.tmdb.org/t/p/w342${item.poster_path}`,
-									}}
-									style={{
-										width: 150,
-										height: 230,
-										resizeMode: 'contain',
-									}}
-								/>
-								<Text>
-									{item.title ||
-										item.original_title ||
-										item.original_name}
-								</Text>
-								<Text>
-									{moment(item.release_date).format(
-										'MMMM DD, YYYY'
-									)}
-								</Text>
-								{item.adult ? (
-									<Badge style={styles.adultBadge}>
-										Adult
-									</Badge>
-								) : null}
-							</View>
+							<TouchableOpacity onPress={() => handleViewMovieDetails(item)} >
+								<View style={{ flex:1, width: 150, alignItems: 'flex-start', }}>
+									<View>
+										<Image
+											source={{
+												uri: `https://image.tmdb.org/t/p/w342${item.poster_path}`,
+											}}
+											style={{
+												width: 150,
+												height: 230,
+												resizeMode: 'contain',
+												borderRadius: 10,
+											}}
+										/>
+										<Text>
+											{item.title ||
+												item.original_title ||
+												item.original_name}
+										</Text>
+										<Text>
+											{moment(item.release_date).format(
+												'MMMM DD, YYYY'
+											)}
+										</Text>
+									</View>
+									<View>
+										<AirbnbRating
+											showRating={false}
+											count={5}
+											// showRating
+											defaultRating={item.vote_average - 5}
+											size={20}
+											isDisabled
+										/>
+										{item.adult ? (
+											<Badge style={styles.adultBadge}>
+												Adult
+											</Badge>
+										) : null}
+									</View>
+								</View>
+							</TouchableOpacity>
 						)}
 						ItemSeparatorComponent={() => <Spacer margin={5} />}
 						ListEmptyComponent={
@@ -170,35 +194,53 @@ const HomeScreen: React.FC<Props> = (props: Props) => {
 					<FlatList
 						data={trendingMoviesQuery.data?.data.results}
 						keyExtractor={(item) => item.id.toString()}
-						horizontal
 						renderItem={({ item, index }) => (
-							<View style={{ width: 150 }}>
-								<Image
-									source={{
-										uri: `https://image.tmdb.org/t/p/w342${item.poster_path}`,
-									}}
-									style={{
-										width: 150,
-										height: 230,
-										resizeMode: 'contain',
-									}}
-								/>
-								<Text>
-									{item.title ||
-										item.original_title ||
-										item.original_name}
-								</Text>
-								<Text>
-									{moment(item.release_date).format(
-										'MMMM DD, YYYY'
-									)}
-								</Text>
-								{item.adult ? (
-									<Badge style={styles.adultBadge}>
-										Adult
-									</Badge>
-								) : null}
-							</View>
+							<Card>
+								<Card.Content
+									style={{ flex: 1, flexDirection: 'row' }}
+								>
+									<View style={{ justifyContent: 'center' }}>
+										<Image
+											source={
+												item.poster_path
+													? {
+															uri: `https://image.tmdb.org/t/p/w154${item.poster_path}`,
+													}
+													: Res.noImageAvailable
+											}
+											style={{
+												width: 100,
+												height: 150,
+												resizeMode: 'contain',
+												borderRadius: 10,
+											}}
+										/>
+									</View>
+									<Spacer margin={5} />
+									<View style={{ flex: 1 }}>
+										<Text>
+											{item.title ||
+												item.original_title ||
+												item.original_name}
+										</Text>
+										<Text>
+											{moment(item.release_date).format(
+												'MMMM DD, YYYY'
+											)}
+										</Text>
+										<Spacer margin={5} />
+										<Text>
+											{item.overview ||
+												'No Movie Overview Available'}
+										</Text>
+										{item.adult ? (
+											<Badge style={styles.adultBadge}>
+												Adult
+											</Badge>
+										) : null}
+									</View>
+								</Card.Content>
+							</Card>
 						)}
 						ItemSeparatorComponent={() => <Spacer margin={5} />}
 						ListEmptyComponent={
@@ -246,8 +288,8 @@ const styles = StyleSheet.create({
 		alignSelf: 'flex-start',
 	},
 	trendingMoviesTitle: {
-		fontSize: 25,
-		fontWeight: 'bold',
+		fontSize: 20,
+		// fontWeight: 'bold',
 		color: 'white',
 	},
 });
