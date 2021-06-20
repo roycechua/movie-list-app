@@ -12,6 +12,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
+		94E801A6267F102D00F60F09 /* BridgeHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E801A5267F102D00F60F09 /* BridgeHeader.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		D405D6CA88F895380301F877 /* libPods-movielistapp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51BDBE7D29484F15E13221F4 /* libPods-movielistapp.a */; };
 /* End PBXBuildFile section */
@@ -26,6 +27,8 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = movielistapp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = movielistapp/main.m; sourceTree = "<group>"; };
 		51BDBE7D29484F15E13221F4 /* libPods-movielistapp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-movielistapp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		94E801A4267F102C00F60F09 /* movielistapp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "movielistapp-Bridging-Header.h"; sourceTree = "<group>"; };
+		94E801A5267F102D00F60F09 /* BridgeHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeHeader.swift; sourceTree = "<group>"; };
 		9A7EEB85F3056DE96BB15D46 /* Pods-movielistapp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-movielistapp.release.xcconfig"; path = "Target Support Files/Pods-movielistapp/Pods-movielistapp.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = movielistapp/SplashScreen.storyboard; sourceTree = "<group>"; };
 		AD8C870E3BD9AEC14D4FCABE /* Pods-movielistapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-movielistapp.debug.xcconfig"; path = "Target Support Files/Pods-movielistapp/Pods-movielistapp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -82,11 +85,13 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				94E801A5267F102D00F60F09 /* BridgeHeader.swift */,
 				13B07FAE1A68108700A75B9A /* movielistapp */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				D65327D7A22EEC0BE12398D9 /* Pods */,
+				94E801A4267F102C00F60F09 /* movielistapp-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -153,7 +158,7 @@
 				LastUpgradeCheck = 1240;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1240;
 					};
 				};
 			};
@@ -288,6 +293,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94E801A6267F102D00F60F09 /* BridgeHeader.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -330,6 +336,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.name.movielistapp;
 				PRODUCT_NAME = movielistapp;
+				SWIFT_OBJC_BRIDGING_HEADER = "movielistapp-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -353,6 +360,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.name.movielistapp;
 				PRODUCT_NAME = movielistapp;
+				SWIFT_OBJC_BRIDGING_HEADER = "movielistapp-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

@@ -12,6 +12,7 @@
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.5",
     "@reduxjs/toolkit": "^1.6.0",
+    "axios": "^0.21.1",
     "expo": "~41.0.1",
     "expo-splash-screen": "~0.10.2",
     "expo-updates": "~0.5.4",
@@ -25,6 +26,7 @@
     "react-native-screens": "^3.4.0",
     "react-native-unimodules": "~0.13.3",
     "react-native-web": "~0.13.12",
+    "react-query": "^3.17.2",
     "react-redux": "^7.2.4",
     "redux-flipper": "^1.4.2",
     "redux-logger": "^3.0.6"
