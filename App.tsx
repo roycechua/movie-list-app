@@ -1,9 +1,13 @@
 import React from 'react';
 import MainNavigationContainer from './src/navigation/MainNavigationContainer';
+import { Provider as StoreProvider } from 'react-redux';
+import { store } from './src/redux/store';
 
 const App : React.FC = () => {
 	return (
-		<MainNavigationContainer/>
+		<StoreProvider store={store}>
+			<MainNavigationContainer/>
+		</StoreProvider>
 	);
 }
 
