@@ -6,19 +6,26 @@ import {
 	Middleware,
 	MiddlewareArray,
 } from '@reduxjs/toolkit';
+import authSlice from '../features/auth/authSlice';
+import configSlice from '../features/config/configSlice';
 
 const middlewares: Middleware[] = [];
+
+const stateWhitelist : string[] = [];
 
 if (__DEV__) {
 	const { logger } = require('redux-logger');
 	const createDebugger = require('redux-flipper').default;
 	middlewares.push(logger);
-	middlewares.push(createDebugger());
+	middlewares.push(createDebugger({
+		stateWhitelist,
+	}));
 }
 
 export const store = configureStore({
 	reducer: {
-
+		auth: authSlice,
+		config: configSlice,
 	},
 	middleware: (getDefaultMiddleware) => [
 		...getDefaultMiddleware(),
