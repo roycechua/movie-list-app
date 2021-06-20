@@ -1,11 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
+import Screen from './Screen';
 
 const SplashScreen = () => {
 	return (
-		<View>
-			<Text>SplashScreen</Text>
-		</View>
+		<Screen center>
+			<ActivityIndicator size='large' />
+		</Screen>
 	);
 };
 

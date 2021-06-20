@@ -9,7 +9,7 @@ import HomeScreen from '../features/home/HomeScreen';
 import MovieDetailScreen from '../features/movies/MovieDetailScreen';
 import WatchListScreen from '../features/watchlist/WatchListScreen';
 import { fetchConfiguration } from '../features/config/configSlice';
-import { useAppDispatch } from '../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
 
 export type RootStackParamsList = {
 	SignIn: undefined;
@@ -25,17 +25,17 @@ const Stack = createStackNavigator();
 
 const MainNavigationContainer: React.FC<Props> = (props: Props) => {
 	// to be replaced later by redux state variables
-	const [isLoading, setIsLoading] = useState(false);
-	const [userToken, setUserToken] = useState(null);
 	const [isSignout, setIsSignout] = useState(false);
 
 	const dispatch = useAppDispatch();
+	const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn);
+	const isAttemptingFetchConfiguration = useAppSelector(state => state.config.isAttemptingFetchConfiguration);
 
 	useEffect(() => {
 		dispatch(fetchConfiguration())
 	}, [])
 
-	if (isLoading) {
+	if (isAttemptingFetchConfiguration) {
 		// We haven't finished checking for the token yet
 		return <SplashScreen />;
 	}
@@ -43,7 +43,7 @@ const MainNavigationContainer: React.FC<Props> = (props: Props) => {
 	return (
 		<NavigationContainer>
 			<Stack.Navigator>
-				{userToken == null ? (
+				{isLoggedIn ? (
 					<>
 						{/* No token found, user isn't signed in */}
 						<Stack.Screen
