@@ -55,6 +55,8 @@ const SignInScreen: React.FC<Props> = (props: Props) => {
 					disabled={attemptingLogin}
 					value={username}
 					onChangeText={setUsername}
+					autoCapitalize={'none'}
+					autoCorrect={false}
 				/>
 				<Spacer margin={15} />
 				<TextInput
@@ -66,6 +68,8 @@ const SignInScreen: React.FC<Props> = (props: Props) => {
 					disabled={attemptingLogin}
 					value={password}
 					onChangeText={setPassword}
+					autoCapitalize={'none'}
+					autoCorrect={false}
 				/>
 				<Spacer margin={15} />
 				<Button
