@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -8,6 +8,8 @@ import SignUpScreen from '../features/auth/SignUpScreen';
 import HomeScreen from '../features/home/HomeScreen';
 import MovieDetailScreen from '../features/movies/MovieDetailScreen';
 import WatchListScreen from '../features/watchlist/WatchListScreen';
+import { fetchConfiguration } from '../features/config/configSlice';
+import { useAppDispatch } from '../redux/hooks';
 
 export type RootStackParamsList = {
 	SignIn: undefined;
@@ -26,6 +28,12 @@ const MainNavigationContainer: React.FC<Props> = (props: Props) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [userToken, setUserToken] = useState(null);
 	const [isSignout, setIsSignout] = useState(false);
+
+	const dispatch = useAppDispatch();
+
+	useEffect(() => {
+		dispatch(fetchConfiguration())
+	}, [])
 
 	if (isLoading) {
 		// We haven't finished checking for the token yet

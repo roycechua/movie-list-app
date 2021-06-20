@@ -1,26 +1,61 @@
-import { createSlice, Dispatch } from '@reduxjs/toolkit'
+import { createSlice, Dispatch } from '@reduxjs/toolkit';
+import API from '../../services/API';
 
 const initialState = {
-    configuration: {},
-}
+	configuration: {},
+	isAttemptingFetchConfiguration: false,
+	fetchConfigurationSuccess: false,
+	fetchConfigurationFailed: false,
+};
 
 const configSlice = createSlice({
-    name: 'config',
-    initialState,
-    reducers: {
-        setConfiguration: (state, action) => {
-            state.configuration = action.payload;
-        }
-    }
+	name: 'config',
+	initialState,
+	reducers: {
+		setConfiguration: (state, action) => {
+			state.configuration = action.payload;
+		},
+		setAttemptingFetchConfiguration: (state) => {
+			state.isAttemptingFetchConfiguration = true;
+			state.fetchConfigurationSuccess = false;
+			state.fetchConfigurationFailed = false;
+		},
+		setFetchConfigurationSuccess: (state) => {
+			state.isAttemptingFetchConfiguration = false;
+			state.fetchConfigurationSuccess = true;
+			state.fetchConfigurationFailed = false;
+		},
+		setFetchConfigurationFailed: (state) => {
+			state.isAttemptingFetchConfiguration = false;
+			state.fetchConfigurationSuccess = false;
+			state.fetchConfigurationFailed = true;
+		},
+	},
 });
 
 export const {
-    setConfiguration,
-} = configSlice.actions
+	setConfiguration,
+	setAttemptingFetchConfiguration,
+	setFetchConfigurationSuccess,
+	setFetchConfigurationFailed,
+} = configSlice.actions;
 
 // thunks
-const fetchConfiguration = () => async (dispatch : Dispatch) => {
-    
-}
+export const fetchConfiguration = () => async (dispatch: Dispatch) => {
+	try {
+		dispatch(setAttemptingFetchConfiguration());
+		let configResponse = await API.getAPIConfiguration();
+		if (configResponse.status == 200) {
+			dispatch(setConfiguration(configResponse.data));
+			dispatch(setFetchConfigurationSuccess());
+		} else {
+            dispatch(setFetchConfigurationFailed());
+			throw Error('Fetch Configuration Failed');
+		}
+	} catch (error) {
+		alert(`Fetch Configuration Failed. Error '${error.message}'`);
+		dispatch(setFetchConfigurationFailed());
+	}
+};
 
-export default configSlice.reducer
+export default configSlice.reducer;
