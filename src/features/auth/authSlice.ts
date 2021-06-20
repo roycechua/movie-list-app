@@ -23,16 +23,23 @@ const authSlice = createSlice({
 			state.attemptingLogin = false;
 			state.loginSuccess = true;
 			state.loginFailed = false;
+			state.isLoggedIn = true;
 		},
 		setLoginFailed: (state) => {
 			state.attemptingLogin = false;
 			state.loginSuccess = false;
 			state.loginFailed = true;
 		},
+		setLogout: (state) => {
+			state.attemptingLogin = false;
+			state.loginSuccess = false;
+			state.loginFailed = false;
+			state.isLoggedIn = false;
+		},
 	},
 });
 
-export const { setAttemptingLogin, setLoginSuccess, setLoginFailed } =
+export const { setAttemptingLogin, setLoginSuccess, setLoginFailed, setLogout } =
 	authSlice.actions;
 
 // thunks
@@ -56,7 +63,6 @@ export const login = (payload: loginPayload) => async (dispatch: Dispatch) => {
 
 		if (loginRes.status != 200) throw new Error('Login Failed');
 
-		alert('Login Successful');
 		dispatch(setLoginSuccess());
 	} catch (error) {
 		alert(`Login Failed. '${error.message}'`);
