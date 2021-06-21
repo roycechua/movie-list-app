@@ -16,14 +16,14 @@ export default {
 		),
 	createSession: (payload: { request_token: string }) =>
 		AxiosModule.post(
-			`https://api.themoviedb.org/3/authentication/session/new?api_key=${constants.API_KEY}`,
+			`/authentication/session/new?api_key=${constants.API_KEY}`,
 			payload
 		),
 
 	// User
 	getAccountDetails: (payload: { session_id: string }) =>
 		AxiosModule.get(
-			`https://api.themoviedb.org/3/account?session_id=${payload.session_id}&api_key=${constants.API_KEY}`
+			`/account?session_id=${payload.session_id}&api_key=${constants.API_KEY}`
 		),
 
 	// Configuration
@@ -33,17 +33,17 @@ export default {
 	// Movies
 	getTrendingMovies: () =>
 		AxiosModule.get(
-			`https://api.themoviedb.org/3/trending/movie/day?api_key=${constants.API_KEY}`
+			`/trending/movie/day?api_key=${constants.API_KEY}`
 		),
 	searchMovies: (payload: any) =>
 		AxiosModule.get(
-			`https://api.themoviedb.org/3/search/movie?query=${payload.query}&language=en-US&api_key=${constants.API_KEY}`
+			`/search/movie?query=${payload.query}&language=en-US&api_key=${constants.API_KEY}`
 		),
 
 	// Watchlist
 	getWatchlist: (payload: { account_id: number; session_id: string }) =>
 		AxiosModule.get(
-			`https://api.themoviedb.org/3/account/${payload.account_id}/watchlist/movies?session_id=${payload.session_id}&api_key=${constants.API_KEY}`
+			`/account/${payload.account_id}/watchlist/movies?session_id=${payload.session_id}&api_key=${constants.API_KEY}`
 		),
 	addToWatchlist: (payload: {
 		account_id: number;
@@ -53,11 +53,30 @@ export default {
 		watchlist: boolean;
 	}) =>
 		AxiosModule.post(
-			`https://api.themoviedb.org/3/account/${payload.account_id}/watchlist?session_id=${payload.session_id}&api_key=${constants.API_KEY}`,
+			`/account/${payload.account_id}/watchlist?session_id=${payload.session_id}&api_key=${constants.API_KEY}`,
 			{
-				"media_type": "movie",
-				"media_id": payload.media_id,
-				"watchlist": true
+				media_type: 'movie',
+				media_id: payload.media_id,
+				watchlist: true,
 			}
+		),
+
+	// Rating
+	getRatings: (payload: { account_id: number; session_id: string }) =>
+		AxiosModule.get(
+			`/account/${payload.account_id}/rated/movies?session_id=${payload.session_id}&api_key=${constants.API_KEY}`
+		),
+	addRating: (payload: {
+		media_id: number;
+		session_id: string;
+		value: number;
+	}) =>
+		AxiosModule.post(
+			`/movie/${payload.media_id}/rating?session_id=${payload.session_id}&api_key=${constants.API_KEY}`,
+			payload
+		),
+	deleteRating: (payload: { media_id: number; session_id: string }) =>
+		AxiosModule.delete(
+			`/movie/${payload.media_id}/rating?session_id=${payload.session_id}&api_key=${constants.API_KEY}`
 		),
 };

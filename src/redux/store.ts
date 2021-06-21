@@ -8,6 +8,7 @@ import {
 } from '@reduxjs/toolkit';
 import authSlice from '../features/auth/authSlice';
 import configSlice from '../features/config/configSlice';
+import moviesSlice from '../features/movies/moviesSlice';
 import userSlice from '../features/user/userSlice';
 
 const middlewares: Middleware[] = [];
@@ -28,6 +29,7 @@ export const store = configureStore({
 		auth: authSlice,
 		config: configSlice,
 		user: userSlice,
+		movies: moviesSlice,
 	},
 	middleware: (getDefaultMiddleware) => [
 		...getDefaultMiddleware(),
