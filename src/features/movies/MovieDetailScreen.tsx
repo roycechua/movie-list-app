@@ -1,6 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
-import React, { useLayoutEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import {
 	StyleSheet,
 	Text,
@@ -14,10 +14,11 @@ import { AirbnbRating, Rating } from 'react-native-ratings';
 import { useMutation, useQueryClient } from 'react-query';
 import Spacer from '../../common/components/Spacer';
 import { RootStackParamsList } from '../../navigation/MainNavigationContainer';
-import { useAppSelector } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import API from '../../services/API';
 import Res from '../../themes/Res';
 import theme from '../../themes/themes';
+import { getMovieRatings } from './moviesSlice';
 
 // Props
 type MovieDetailScreenNavigationProp = StackNavigationProp<
@@ -37,12 +38,26 @@ const MovieDetailScreen: React.FC<Props> = (props: Props) => {
 	const { navigation, route } = props;
 	const { movie, type } = route.params;
 
-	// retrieve user data
-	const { data } = useAppSelector((state) => state.user);
-
 	// Access the react query client
 	const queryClient = useQueryClient();
 
+	const dispatch = useAppDispatch();
+	// retrieve user data
+	const { data } = useAppSelector((state) => state.user);
+	const { ratings } = useAppSelector((state) => state.movies);
+
+	// rating state
+	const [rating, setRating] = useState(0);
+
+	// assign this movie an existing rating from the user if any record was found
+	useEffect(() => {
+		const existingRating = ratings.find((entry) => entry.id == movie.id);
+		if (existingRating) {
+			setRating(existingRating.rating);
+		}
+	}, [ratings]);
+
+	// invoke a dynamic header title depending on the movie title
 	useLayoutEffect(() => {
 		navigation.setOptions({
 			headerTitle: movie.original_title,
@@ -72,8 +87,37 @@ const MovieDetailScreen: React.FC<Props> = (props: Props) => {
 		},
 	});
 
+	const addRatingMutation = useMutation(API.addRating, {
+		onSuccess: () => {
+			alert('Rating saved');
+			// Invalidate and refetch
+			queryClient.invalidateQueries('getUserRatings');
+			dispatch(getMovieRatings());
+		},
+		onError: (error: Error) => {
+			alert(
+				`Error encountered while adding movie rating. '${error.message}'`
+			);
+		},
+	});
+
+	const deleteRatingMutation = useMutation(API.deleteRating, {
+		onSuccess: () => {
+			alert('Movie rating deleted');
+			setRating(0);
+			// Invalidate and refetch
+			queryClient.invalidateQueries('getUserRatings');
+			dispatch(getMovieRatings());
+		},
+		onError: (error: Error) => {
+			alert(
+				`Error encountered while deleting movie rating. '${error.message}'`
+			);
+		},
+	});
+
 	const handleAddToWatchList = () => {
-		addToWatchlistMutation.mutate({
+		addToWatchlistMutation.mutateAsync({
 			account_id: data.id,
 			session_id: data.sessionId,
 			media_type: 'movie',
@@ -81,6 +125,22 @@ const MovieDetailScreen: React.FC<Props> = (props: Props) => {
 			watchlist: true,
 		});
 	};
+
+	const handleOnFinishRating = (rating : number) => {
+		setRating(rating);
+		addRatingMutation.mutateAsync({
+			media_id: movie.id,
+			session_id: data.sessionId,
+			value: rating,
+		})
+	}
+	
+	const handleRemoveRating = () => {
+		deleteRatingMutation.mutateAsync({
+			media_id: movie.id,
+			session_id: data.sessionId,
+		});
+	}
 
 	return (
 		<ScrollView style={{ padding: 20 }}>
@@ -113,7 +173,7 @@ const MovieDetailScreen: React.FC<Props> = (props: Props) => {
 					showRating={false}
 					count={5}
 					// showRating
-					defaultRating={movie.vote_average - 5}
+					defaultRating={movie.vote_average / 2}
 					size={20}
 					isDisabled
 				/>
@@ -141,10 +201,15 @@ const MovieDetailScreen: React.FC<Props> = (props: Props) => {
 					showRating={false}
 					count={5}
 					// showRating
-					defaultRating={0}
+					defaultRating={rating}
 					size={20}
-					onFinishRating={(rating) => {}}
+					onFinishRating={handleOnFinishRating}
 				/>
+				{
+					rating
+					? <Button color={colors.error} onPress={handleRemoveRating}>Remove Rating</Button>
+					: null
+				}
 			</View>
 			<Spacer margin={20} />
 		</ScrollView>

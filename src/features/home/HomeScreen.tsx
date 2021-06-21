@@ -29,6 +29,7 @@ import theme from '../../themes/themes';
 import moment from 'moment';
 import Res from '../../themes/Res';
 import { AirbnbRating } from 'react-native-ratings';
+import { setUserMovieRatings } from '../movies/moviesSlice';
 
 // Props
 type HomeScreenNavigationProp = StackNavigationProp<
@@ -47,9 +48,20 @@ const HomeScreen: React.FC<Props> = (props: Props) => {
 	const dispatch = useAppDispatch();
 	const { data } = useAppSelector((state) => state.user);
 
-	// search feature
+	// search feature states
 	const [searchText, setSearchText] = useState('');
 	const handleClearSearchText = () => setSearchText('');
+
+	// retrieve data
+	const getUserRatingsQuery = useQuery(
+		'getUserRatings',
+		() => API.getRatings({ account_id: data.id, session_id: data.sessionId }),
+		{ keepPreviousData: true, staleTime: 5000 }
+	);
+
+	useEffect(() => {
+		dispatch(setUserMovieRatings(getUserRatingsQuery.data?.data.results))
+	}, [getUserRatingsQuery.isLoading])
 
 	// retrieve data
 	const trendingMoviesQuery = useQuery(
@@ -173,7 +185,7 @@ const HomeScreen: React.FC<Props> = (props: Props) => {
 											count={5}
 											// showRating
 											defaultRating={
-												item.vote_average - 5
+												item.vote_average/2
 											}
 											size={20}
 											isDisabled
