@@ -67,17 +67,7 @@ const MovieDetailScreen: React.FC<Props> = (props: Props) => {
 				/>
 			</View>
 			<Spacer margin={5} />
-			<View
-				style={{
-					flexDirection: 'row',
-					justifyContent: 'space-between',
-				}}
-			>
-				<Text style={{ fontSize: 30 }}>{movie.original_title}</Text>
-				<Button icon='plus-circle' onPress={() => {}}>
-					Add to Watch List
-				</Button>
-			</View>
+			<Text style={{ fontSize: 30 }}>{movie.original_title}</Text>
 			<Text style={{ fontSize: 15 }}>
 				Release Date:{' '}
 				{moment(movie.release_date).format('MMMM DD, YYYY')}
@@ -94,7 +84,18 @@ const MovieDetailScreen: React.FC<Props> = (props: Props) => {
 				/>
 			</View>
 			<Spacer margin={10} />
-			<Text style={{ fontSize: 25 }}>Overview</Text>
+			<View 
+				style={{
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					flexWrap:'wrap'
+				}}
+			>
+				<Text style={{ fontSize: 25 }}>Overview</Text>
+				<Button icon='plus-circle' onPress={() => {}}>
+					Add to Watch List
+				</Button>
+			</View>		
 			<Text style={{ fontSize: 15 }}>{movie.overview}</Text>
 			<Spacer margin={10} />
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
