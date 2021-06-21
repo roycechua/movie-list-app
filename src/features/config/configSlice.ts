@@ -2,7 +2,6 @@ import { createSlice, Dispatch } from '@reduxjs/toolkit';
 import API from '../../services/API';
 
 const initialState = {
-	requestToken: '',
 	configuration: {},
 	isAttemptingFetchConfiguration: false,
 	fetchConfigurationSuccess: false,
@@ -13,9 +12,6 @@ const configSlice = createSlice({
 	name: 'config',
 	initialState,
 	reducers: {
-		setRequestToken: (state, action) => {
-			state.requestToken = action.payload;
-		},
 		setConfiguration: (state, action) => {
 			state.configuration = action.payload;
 		},
@@ -38,7 +34,6 @@ const configSlice = createSlice({
 });
 
 export const {
-	setRequestToken,
 	setConfiguration,
 	setAttemptingFetchConfiguration,
 	setFetchConfigurationSuccess,
