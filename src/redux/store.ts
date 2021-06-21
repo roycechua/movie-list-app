@@ -8,6 +8,7 @@ import {
 } from '@reduxjs/toolkit';
 import authSlice from '../features/auth/authSlice';
 import configSlice from '../features/config/configSlice';
+import userSlice from '../features/user/userSlice';
 
 const middlewares: Middleware[] = [];
 
@@ -26,6 +27,7 @@ export const store = configureStore({
 	reducer: {
 		auth: authSlice,
 		config: configSlice,
+		user: userSlice,
 	},
 	middleware: (getDefaultMiddleware) => [
 		...getDefaultMiddleware(),
