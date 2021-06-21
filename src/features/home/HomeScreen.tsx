@@ -45,7 +45,7 @@ const HomeScreen: React.FC<Props> = (props: Props) => {
 	const { colors } = useTheme();
 
 	const dispatch = useAppDispatch();
-	// const { configuration } = useAppSelector((state) => state.config);
+	const { data } = useAppSelector((state) => state.user);
 
 	// search feature
 	const [searchText, setSearchText] = useState('');
@@ -58,15 +58,37 @@ const HomeScreen: React.FC<Props> = (props: Props) => {
 		{ keepPreviousData: true, staleTime: 5000 }
 	);
 
-	// 
-	const handleViewMovieDetails = (movie : any) => {
+	const userWatchlist = useQuery(
+		'getWatchlist',
+		() =>
+			API.getWatchlist({
+				session_id: data.sessionId,
+				account_id: data.id,
+			}),
+		{ keepPreviousData: true, staleTime: 5000 }
+	);
+
+	// navigate to movie detail screen
+	const handleViewMovieDetails = (movie: any) => {
 		navigation.navigate('MovieDetail', {
 			movie,
-		})
-	}
+			type: 'movieDetail'
+		});
+	};
+
+	// navigate to movie detail screen for watchlist
+	const handleViewWatchlistMovieDetails = (movie: any) => {
+		navigation.navigate('MovieDetail', {
+			movie,
+			type: 'watchlist'
+		});
+	};
 
 	return (
-		<ScrollView contentContainerStyle={{ padding: 10 }} showsVerticalScrollIndicator={false}>
+		<ScrollView
+			contentContainerStyle={{ padding: 10 }}
+			showsVerticalScrollIndicator={false}
+		>
 			<StatusBar
 				animated={true}
 				backgroundColor={colors.primary}
@@ -112,8 +134,16 @@ const HomeScreen: React.FC<Props> = (props: Props) => {
 						keyExtractor={(item) => item.id.toString()}
 						horizontal
 						renderItem={({ item, index }) => (
-							<TouchableOpacity onPress={() => handleViewMovieDetails(item)} >
-								<View style={{ flex:1, width: 150, alignItems: 'flex-start', }}>
+							<TouchableOpacity
+								onPress={() => handleViewMovieDetails(item)}
+							>
+								<View
+									style={{
+										flex: 1,
+										width: 150,
+										alignItems: 'flex-start',
+									}}
+								>
 									<View>
 										<Image
 											source={{
@@ -142,7 +172,9 @@ const HomeScreen: React.FC<Props> = (props: Props) => {
 											showRating={false}
 											count={5}
 											// showRating
-											defaultRating={item.vote_average - 5}
+											defaultRating={
+												item.vote_average - 5
+											}
 											size={20}
 											isDisabled
 										/>
@@ -192,60 +224,71 @@ const HomeScreen: React.FC<Props> = (props: Props) => {
 					</View>
 					<Spacer margin={5} />
 					<FlatList
-						data={trendingMoviesQuery.data?.data.results}
+						data={userWatchlist.data?.data.results}
 						keyExtractor={(item) => item.id.toString()}
 						renderItem={({ item, index }) => (
-							<Card>
-								<Card.Content
-									style={{ flex: 1, flexDirection: 'row' }}
-								>
-									<View style={{ justifyContent: 'center' }}>
-										<Image
-											source={
-												item.poster_path
-													? {
-															uri: `https://image.tmdb.org/t/p/w154${item.poster_path}`,
-													}
-													: Res.noImageAvailable
-											}
-											style={{
-												width: 100,
-												height: 150,
-												resizeMode: 'contain',
-												borderRadius: 10,
-											}}
-										/>
-									</View>
-									<Spacer margin={5} />
-									<View style={{ flex: 1 }}>
-										<Text>
-											{item.title ||
-												item.original_title ||
-												item.original_name}
-										</Text>
-										<Text>
-											{moment(item.release_date).format(
-												'MMMM DD, YYYY'
-											)}
-										</Text>
+							<TouchableOpacity
+								onPress={() => handleViewWatchlistMovieDetails(item)}
+							>
+								<Card>
+									<Card.Content
+										style={{
+											flex: 1,
+											flexDirection: 'row',
+										}}
+									>
+										<View
+											style={{ justifyContent: 'center' }}
+										>
+											<Image
+												source={
+													item.poster_path
+														? {
+																uri: `https://image.tmdb.org/t/p/w154${item.poster_path}`,
+														  }
+														: Res.noImageAvailable
+												}
+												style={{
+													width: 100,
+													height: 150,
+													resizeMode: 'contain',
+													borderRadius: 10,
+												}}
+											/>
+										</View>
 										<Spacer margin={5} />
-										<Text>
-											{item.overview ||
-												'No Movie Overview Available'}
-										</Text>
-										{item.adult ? (
-											<Badge style={styles.adultBadge}>
-												Adult
-											</Badge>
-										) : null}
-									</View>
-								</Card.Content>
-							</Card>
+										<View style={{ flex: 1 }}>
+											<Text>
+												{item.title ||
+													item.original_title ||
+													item.original_name}
+											</Text>
+											<Text>
+												{moment(
+													item.release_date
+												).format('MMMM DD, YYYY')}
+											</Text>
+											<Spacer margin={5} />
+											<Text>
+												{item.overview ||
+													'No Movie Overview Available'}
+											</Text>
+											{item.adult ? (
+												<Badge
+													style={styles.adultBadge}
+												>
+													Adult
+												</Badge>
+											) : null}
+										</View>
+									</Card.Content>
+								</Card>
+							</TouchableOpacity>
 						)}
 						ItemSeparatorComponent={() => <Spacer margin={5} />}
 						ListEmptyComponent={
 							<>
-								{trendingMoviesQuery.isLoading ? (
+								{userWatchlist.isLoading ? (
 									<ActivityIndicator
 										size='large'
 										style={{ alignSelf: 'center' }}
@@ -257,12 +300,13 @@ const HomeScreen: React.FC<Props> = (props: Props) => {
 											margin: 20,
 										}}
 									>
-										No Trending Movies
+										You haven't added anything to your
+										watchlist
 									</Text>
 								)}
 							</>
 						}
-						extraData={trendingMoviesQuery.isLoading}
+						extraData={userWatchlist.isLoading}
 						showsHorizontalScrollIndicator={false}
 						showsVerticalScrollIndicator={false}
 					/>

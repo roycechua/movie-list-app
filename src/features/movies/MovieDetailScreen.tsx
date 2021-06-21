@@ -11,8 +11,11 @@ import {
 } from 'react-native';
 import { Button, useTheme } from 'react-native-paper';
 import { AirbnbRating, Rating } from 'react-native-ratings';
+import { useMutation, useQueryClient } from 'react-query';
 import Spacer from '../../common/components/Spacer';
 import { RootStackParamsList } from '../../navigation/MainNavigationContainer';
+import { useAppSelector } from '../../redux/hooks';
+import API from '../../services/API';
 import Res from '../../themes/Res';
 import theme from '../../themes/themes';
 
@@ -32,7 +35,13 @@ type Props = {
 const MovieDetailScreen: React.FC<Props> = (props: Props) => {
 	const { colors } = useTheme();
 	const { navigation, route } = props;
-	const { movie } = route.params;
+	const { movie, type } = route.params;
+
+	// retrieve user data
+	const { data } = useAppSelector((state) => state.user);
+
+	// Access the react query client
+	const queryClient = useQueryClient();
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
@@ -46,6 +55,32 @@ const MovieDetailScreen: React.FC<Props> = (props: Props) => {
 			},
 		});
 	}, [navigation]);
+
+	// Mutations
+	const addToWatchlistMutation = useMutation(API.addToWatchlist, {
+		onSuccess: () => {
+			alert('Movie added to watch list');
+
+			// Invalidate and refetch
+			queryClient.invalidateQueries('getWatchlist');
+			queryClient.invalidateQueries('getTrendingMovies');
+		},
+		onError: (error: Error) => {
+			alert(
+				`Error encountered while adding movie to watch list. '${error.message}'`
+			);
+		},
+	});
+
+	const handleAddToWatchList = () => {
+		addToWatchlistMutation.mutate({
+			account_id: data.id,
+			session_id: data.sessionId,
+			media_type: 'movie',
+			media_id: movie.id,
+			watchlist: true,
+		});
+	};
 
 	return (
 		<ScrollView style={{ padding: 20 }}>
@@ -84,18 +119,20 @@ const MovieDetailScreen: React.FC<Props> = (props: Props) => {
 				/>
 			</View>
 			<Spacer margin={10} />
-			<View 
+			<View
 				style={{
 					flexDirection: 'row',
 					justifyContent: 'space-between',
-					flexWrap:'wrap'
+					flexWrap: 'wrap',
 				}}
 			>
 				<Text style={{ fontSize: 25 }}>Overview</Text>
-				<Button icon='plus-circle' onPress={() => {}}>
-					Add to Watch List
-				</Button>
-			</View>		
+				{type !== 'watchlist' ? (
+					<Button icon='plus-circle' onPress={handleAddToWatchList}>
+						Add to Watch List
+					</Button>
+				) : null}
+			</View>
 			<Text style={{ fontSize: 15 }}>{movie.overview}</Text>
 			<Spacer margin={10} />
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
