@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { useTheme } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { setLogout } from '../features/auth/authSlice';
+import { isReadyRef, navigationRef } from './RootNavigation';
 
 export type RootStackParamsList = {
 	SignIn: undefined;
@@ -28,9 +29,6 @@ const Stack = createStackNavigator();
 
 const MainNavigationContainer: React.FC<Props> = (props: Props) => {
 	const { colors } = useTheme();
-
-	// to be replaced later by redux state variables
-	const [isSignout, setIsSignout] = useState(false);
 
 	const dispatch = useAppDispatch();
 	const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
@@ -50,7 +48,13 @@ const MainNavigationContainer: React.FC<Props> = (props: Props) => {
 	const handleLogout = () => dispatch(setLogout());
 
 	return (
-		<NavigationContainer>
+		<NavigationContainer
+			ref={navigationRef}
+			onReady={() => {
+				// @ts-ignore
+				isReadyRef.current = true;
+			}}
+		>
 			<Stack.Navigator>
 				{!isLoggedIn ? (
 					<>
@@ -60,11 +64,6 @@ const MainNavigationContainer: React.FC<Props> = (props: Props) => {
 							component={SignInScreen}
 							options={{
 								title: 'Sign In',
-								// When logging out, a pop animation feels intuitive
-								// You can remove this if you want the default 'push' animation
-								animationTypeForReplace: isSignout
-									? 'pop'
-									: 'push',
 								headerShown: false,
 							}}
 						/>
@@ -93,7 +92,7 @@ const MainNavigationContainer: React.FC<Props> = (props: Props) => {
 								},
 								headerRight: () => (
 									<TouchableOpacity onPress={handleLogout}>
-										<View style={{margin: 10}}>
+										<View style={{ margin: 10 }}>
 											<MaterialCommunityIcons
 												name='logout'
 												size={24}
